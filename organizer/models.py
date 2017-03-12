@@ -7,6 +7,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 class Startup(models.Model):
     name = models.CharField(max_length=31)
     slug = models.SlugField()
@@ -14,16 +17,25 @@ class Startup(models.Model):
     founded_date = models.DateField()
     contact = models.EmailField()
     website = models.URLField()
-    tags = models.ManoToManyField(Tag)
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+        get_latest_by = 'founded_date'
+
 class NewsLink(models.Model):
     title = models.CharField(max_length=63)
-    pub_date = models.DateFieldo('date published')
+    pub_date = models.DateField('date published')
     link = models.URLField(max_length=255)
     startup = models.ForeignKey(Startup)
 
     def __str__(self):
         return "{}:{}".format(self.startup, self.title)
+
+    class Meta:
+        verbose_name = 'news article'
+        ordering =  ['-pub_date']
+        get_latest_by = 'pub_date'
